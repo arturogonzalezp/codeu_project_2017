@@ -25,6 +25,13 @@ import codeu.chat.common.User;
 import codeu.chat.common.Uuid;
 import codeu.chat.common.Uuids;
 import codeu.chat.util.Logger;
+import codeu.chat.common.DatabaseUser;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
+import com.google.gson.*;
 
 public final class Controller implements RawController, BasicController {
 
@@ -145,6 +152,51 @@ public final class Controller implements RawController, BasicController {
     }
 
     return conversation;
+  }
+
+  // Search for a user in the database and create the User object in the return.
+  @Override
+  public User searchUserInDatabase(String username, String pswd){
+    StringBuilder stringBuilder = new StringBuilder();
+    Gson gson = new Gson();
+
+    // Open the database file.
+    try (BufferedReader br = new BufferedReader(new FileReader("../src/codeu/chat/databases/users"))) {
+
+      // Append the current line into the StringBuilder.
+			String sCurrentLine;
+			while ((sCurrentLine = br.readLine()) != null) {
+				stringBuilder.append(sCurrentLine);
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+    // Parse the database json into DatabaseUser array using Gson.
+    DatabaseUser[] databaseUsers = gson.fromJson(stringBuilder.toString(), DatabaseUser[].class); 
+
+    // Iterate in every DatabaseUser
+    for(DatabaseUser databaseUser : databaseUsers){
+
+      // Check if the username and pswd matches with the DatabaseUser.
+      if(databaseUser.checkLogin(username,pswd)){
+
+        final User user = new User(databaseUser);
+
+        // Check if the user is already in the server model and return it.
+        if(model.userById().first(user.id) == null){
+          model.add(user);
+          LOG.info("User created and logged in (user.id=%s user.name=%s user.display_name=%s user.time=%s)",user.id,user.name,user.display_name,user.creation);
+          return user;
+        }else{
+          final User userFromModel = model.userById().first(user.id);
+          LOG.info("User logged in (user.id=%s user.name=%s user.display_name=%s user.time=%s)",userFromModel.id,userFromModel.name,userFromModel.display_name,userFromModel.creation);
+          return userFromModel;
+        }
+      }
+    }
+    return null;
   }
 
   private Uuid createId() {
