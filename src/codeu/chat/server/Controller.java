@@ -72,6 +72,10 @@ public final class Controller implements RawController, BasicController {
     return newMessage(createId(), author, conversation, body, Time.now());
   }
 
+  public Message newMessage(Uuid author, Uuid conversation, String body, byte[] file) {
+    return newMessage(createId(), author, conversation, body, Time.now(), file);
+  }
+
   @Override
   public User newUser(String name) {
     return newUser(createId(), name, Time.now());
@@ -84,6 +88,10 @@ public final class Controller implements RawController, BasicController {
 
   @Override
   public Message newMessage(Uuid id, Uuid author, Uuid conversation, String body, Time creationTime) {
+    return newMessage(id, author, conversation, body, creationTime, null);
+  }
+
+  public Message newMessage(Uuid id, Uuid author, Uuid conversation, String body, Time creationTime, byte[] file) {
 
     final User foundUser = model.userById().first(author);
     final Conversation foundConversation = model.conversationById().first(conversation);
@@ -92,7 +100,12 @@ public final class Controller implements RawController, BasicController {
 
     if (foundUser != null && foundConversation != null && isIdFree(id)) {
 
-      message = new Message(id, Uuid.NULL, Uuid.NULL, creationTime, author, body);
+      if(file != null) {
+        message = new Message(id, Uuid.NULL, Uuid.NULL, creationTime, author, body, file);
+      } else {
+        message = new Message(id, Uuid.NULL, Uuid.NULL, creationTime, author, body);
+      }
+
       model.add(message);
       LOG.info("Message added: %s", message.id);
 
