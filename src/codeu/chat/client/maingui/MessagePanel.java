@@ -183,6 +183,9 @@ public final class MessagePanel extends JPanel{
           if (returnVal == JFileChooser.APPROVE_OPTION) {
             file = fileChooser.getSelectedFile();
             System.out.println(file.getName());
+            clientContext.message.addFileMessage(clientContext.user.getCurrent().id,
+                    clientContext.conversation.getCurrentId(), file);
+            MessagePanel.this.getAllMessages(clientContext.conversation.getCurrent());
           } else {
             // File Chooser canceled
             file = null;
