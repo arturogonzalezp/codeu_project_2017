@@ -60,6 +60,7 @@ public final class Message {
   public Uuid author;
   public String content;
   public Uuid next;
+  public byte[] file;
 
   public Message(Uuid id, Uuid next, Uuid previous, Time creation, Uuid author, String content) {
 
@@ -69,6 +70,18 @@ public final class Message {
     this.creation = creation;
     this.author = author;
     this.content = content;
+
+  }
+
+  public Message(Uuid id, Uuid next, Uuid previous, Time creation, Uuid author, String content, byte[] file) {
+
+    this.id = id;
+    this.next = next;
+    this.previous = previous;
+    this.creation = creation;
+    this.author = author;
+    this.content = content;
+    this.file = file;
 
   }
 
