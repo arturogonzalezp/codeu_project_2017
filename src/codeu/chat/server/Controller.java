@@ -48,8 +48,7 @@ public final class Controller implements RawController, BasicController {
   private final Uuid.Generator uuidGenerator;
 
   // Get the base dir for the database
-  private final String persistancePath = (new File(System.getProperty("user.dir")))
-  .getParent() + "/persistance/";
+  private final String persistancePath = (new File(System.getProperty("user.dir"))) + "/persistance/";
 
   private PersistanceController persistanceController;
 
