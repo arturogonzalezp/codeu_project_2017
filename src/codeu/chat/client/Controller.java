@@ -69,7 +69,8 @@ public class Controller implements BasicController {
         Serializers.BYTES.write(connection.out(), Files.readAllBytes(file.toPath()));
       }
 
-      if (Serializers.INTEGER.read(connection.in()) == NetworkCode.NEW_MESSAGE_RESPONSE) {
+      if ((file == null && Serializers.INTEGER.read(connection.in()) == NetworkCode.NEW_MESSAGE_RESPONSE) ||
+      (file != null && Serializers.INTEGER.read(connection.in()) == NetworkCode.NEW_FILE_MESSAGE_RESPONSE)){
         response = Serializers.nullable(Message.SERIALIZER).read(connection.in());
       } else {
         LOG.error("Response from server failed.");
