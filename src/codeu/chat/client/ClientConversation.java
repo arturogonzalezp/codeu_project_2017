@@ -62,9 +62,6 @@ public final class ClientConversation {
     if ((title.length() <= 0) || (title.length() > 64)) {
       clean = false;
     } else {
-
-      // TODO: check for invalid characters
-
     }
     return clean;
   }

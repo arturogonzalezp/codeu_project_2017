@@ -142,7 +142,7 @@ public final class MessagePanel extends JPanel{
         if (!clientContext.conversation.hasCurrent()) {
           JOptionPane.showMessageDialog(MessagePanel.this, "You must select a conversation.");
         } else {
-          final String messageText = sendMessageTextArea.getText();
+          final String messageText = " " + sendMessageTextArea.getText();
 
           if (messageText != null && messageText.length() > 0) {
             clientContext.message.addMessage(
