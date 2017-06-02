@@ -72,7 +72,7 @@ public final class Message {
 
   }
 
-  // Constructor with no agruments (needed for Firebase)
+  // Constructor with no arguments (needed for Firebase)
   public Message(){
 
   }

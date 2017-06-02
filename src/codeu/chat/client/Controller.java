@@ -17,13 +17,9 @@ package codeu.chat.client;
 import java.io.File;
 import java.math.BigInteger;
 import java.nio.file.Files;
-import java.security.Key;
 
 import codeu.chat.common.*;
-import codeu.chat.util.Logger;
-import codeu.chat.util.Serializer;
-import codeu.chat.util.Serializers;
-import codeu.chat.util.Uuid;
+import codeu.chat.util.*;
 import codeu.chat.util.connections.Connection;
 import codeu.chat.util.connections.ConnectionSource;
 
@@ -64,7 +60,7 @@ public class Controller implements BasicController {
       Uuid.SERIALIZER.write(connection.out(), conversation);
       BigInteger encrypted = RSA.encrypt(RSA.messageToBigInteger(body), publicKey);
       System.out.println("Encrypted Message sent to Server " + encrypted);
-      body = RSA.keyToString(encrypted);
+      body = RSA.valueToString(encrypted);
       Serializers.STRING.write(connection.out(), body);
 
       if(file != null){

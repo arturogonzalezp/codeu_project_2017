@@ -22,12 +22,10 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
-import codeu.chat.common.EncryptionKey;
 import codeu.chat.common.LinearUuidGenerator;
 import codeu.chat.common.Relay;
 import codeu.chat.util.Logger;
 import codeu.chat.util.Time;
-import codeu.chat.util.Logger;
 import codeu.chat.util.Uuid;
 
 public final class Server implements Relay {

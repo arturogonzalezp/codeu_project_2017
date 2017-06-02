@@ -20,10 +20,7 @@ import java.io.OutputStream;
 import java.util.Collection;
 import java.util.HashSet;
 
-import codeu.chat.util.Serializer;
-import codeu.chat.util.Serializers;
-import codeu.chat.util.Time;
-import codeu.chat.util.Uuid;
+import codeu.chat.util.*;
 
 import com.google.firebase.database.Exclude;
 
@@ -38,9 +35,9 @@ public final class Conversation {
       Uuid.SERIALIZER.write(out, value.owner);
       Time.SERIALIZER.write(out, value.creation);
       Serializers.STRING.write(out, value.title);
-      Serializers.STRING.write(out, RSA.keyToString(value.PublicKey().getNumber()));
-      Serializers.STRING.write(out, RSA.keyToString(value.SecretKey().getNumber()));
-      Serializers.STRING.write(out, RSA.keyToString(value.PublicKey().getModulus()));
+      Serializers.STRING.write(out, RSA.valueToString(value.PublicKey().getNumber()));
+      Serializers.STRING.write(out, RSA.valueToString(value.SecretKey().getNumber()));
+      Serializers.STRING.write(out, RSA.valueToString(value.PublicKey().getModulus()));
       Serializers.collection(Uuid.SERIALIZER).write(out, value.users);
       Uuid.SERIALIZER.write(out, value.firstMessage);
       Uuid.SERIALIZER.write(out, value.lastMessage);
@@ -128,9 +125,9 @@ public final class Conversation {
     this.owner = owner;
     this.creation = creation;
     this.title = title;
-    this.publicNumber = RSA.keyToString(publicKey.getNumber());
-    this.secretNumber = RSA.keyToString(secretKey.getNumber());
-    this.modulus = RSA.keyToString(publicKey.getModulus());
+    this.publicNumber = RSA.valueToString(publicKey.getNumber());
+    this.secretNumber = RSA.valueToString(secretKey.getNumber());
+    this.modulus = RSA.valueToString(publicKey.getModulus());
 
     this.summary = new ConversationSummary(id, owner, creation, title);
 
@@ -151,21 +148,21 @@ public final class Conversation {
   }
 
   public void setSecretKey( EncryptionKey secretKey){
-    this.secretNumber = RSA.keyToString(secretKey.getNumber());
-    this.modulus = RSA.keyToString(secretKey.getModulus());
+    this.secretNumber = RSA.valueToString(secretKey.getNumber());
+    this.modulus = RSA.valueToString(secretKey.getModulus());
   }
 
   public void setPublicKey( EncryptionKey publicKey){
-    this.publicNumber = RSA.keyToString(publicKey.getNumber());
-    this.modulus = RSA.keyToString(publicKey.getModulus());
+    this.publicNumber = RSA.valueToString(publicKey.getNumber());
+    this.modulus = RSA.valueToString(publicKey.getModulus());
   }
 
   public EncryptionKey PublicKey(){
-    return new EncryptionKey(RSA.keyToBigInteger(publicNumber), RSA.keyToBigInteger(modulus));
+    return new EncryptionKey(RSA.valueToBigInteger(publicNumber), RSA.valueToBigInteger(modulus));
   }
 
   public EncryptionKey SecretKey(){
-    return new EncryptionKey(RSA.keyToBigInteger(secretNumber), RSA.keyToBigInteger(modulus));
+    return new EncryptionKey(RSA.valueToBigInteger(secretNumber), RSA.valueToBigInteger(modulus));
   }
 
   // Constructor with no arguments (needed for Firebase)

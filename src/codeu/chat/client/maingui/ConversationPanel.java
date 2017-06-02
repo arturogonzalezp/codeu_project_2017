@@ -100,12 +100,9 @@ public final class ConversationPanel extends JPanel {
           final int index = objectList.getSelectedIndex();
           final String data = objectList.getSelectedValue();
           final ConversationSummary cs = ConversationPanel.this.lookupByTitle(data, index);
-          System.out.println("summary " + cs);
           clientContext.conversation.setCurrent(cs);
           Conversation currentConversation = clientContext.conversation.getConversation(cs.id);
-          System.out.println("current "+ currentConversation);
           clientContext.conversation.setPublicKey(currentConversation.PublicKey());
-          System.out.println("publicKey" + clientContext.conversation.getPublicKey());
           clientContext.conversation.setCurrentConversation(currentConversation);
           messagePanel.update(cs);
         }

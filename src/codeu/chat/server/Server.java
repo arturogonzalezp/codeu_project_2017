@@ -19,17 +19,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigInteger;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.Arrays;
 import java.util.Collection;
 
 import codeu.chat.common.*;
-import codeu.chat.util.Logger;
-import codeu.chat.util.Serializers;
-import codeu.chat.util.Time;
-import codeu.chat.util.Timeline;
-import codeu.chat.util.Uuid;
+import codeu.chat.util.*;
 import codeu.chat.util.connections.Connection;
 
 public final class Server {
@@ -154,6 +148,7 @@ public final class Server {
       final BigInteger publicNumber = Serializers.BIG_INTEGER.read(in);
       final BigInteger secretNumber = Serializers.BIG_INTEGER.read(in);
       final BigInteger modulus = Serializers.BIG_INTEGER.read(in);
+
       final EncryptionKey publicKey = new EncryptionKey(publicNumber, modulus);
       final EncryptionKey secretKey =  new EncryptionKey(secretNumber, modulus);
       final Conversation conversation = controller.newConversation(title, owner, publicKey, secretKey);

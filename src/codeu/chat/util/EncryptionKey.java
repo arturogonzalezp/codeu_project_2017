@@ -1,4 +1,4 @@
-package codeu.chat.common;
+package codeu.chat.util;
 
 import codeu.chat.util.Serializer;
 import codeu.chat.util.Serializers;

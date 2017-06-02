@@ -14,12 +14,12 @@
 
 package codeu.chat.common;
 
+import codeu.chat.util.EncryptionKey;
+import codeu.chat.util.RSA;
 import org.junit.Before;
 import org.junit.Test;
-import codeu.chat.common.RSA;
 
 import java.math.BigInteger;
-import java.util.Arrays;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -37,6 +37,25 @@ public final class RSATest {
     secKey = rsa.getSecKey();
   }
 
+  //Make sure that when keys are cast into Strings, they remain the same when turned back
+  @Test
+  public void testValueConversionCongruence(){
+    final BigInteger expected = secKey.getNumber();
+    final BigInteger actual = RSA.valueToBigInteger(RSA.valueToString(secKey.getNumber()));
+
+    assertEquals(expected, actual);
+  }
+
+  //Make sure messages remain the same after being parsed into a BigInteger and back
+  @Test
+  public void testMessageConversionCongruence(){
+    final String expected = "The test works!";
+    final String actual = RSA.messageToString(RSA.messageToBigInteger(expected));
+
+    assertEquals(expected, actual);
+  }
+
+  //Test that the message is the same before and after encryption and decryption
   @Test
   public void testMessageIntegrity() {
 
@@ -48,14 +67,6 @@ public final class RSATest {
 
     assertNotNull(actual);
     assertEquals(originalMessage, actual);
-  }
-
-  @Test
-  public void testBigIntegerConversion(){
-    final BigInteger expected = secKey.getNumber();
-    final BigInteger actual = RSA.keyToBigInteger(RSA.keyToString(secKey.getNumber()));
-
-    assertEquals(expected, actual);
   }
 
 }
