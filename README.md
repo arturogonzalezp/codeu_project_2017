@@ -207,7 +207,7 @@ Cure: Had to create two different methods for purely numerical values and text
 ### 3: Last Message Decryption
 Symptoms: Last message sent is displayed as gibberish
 Cause: Las message is not encrypted but still goes through the decryption process so it's turned into gibberish
-Cure: Verify if the message is encrypted before decrypting it
+Cure: Verify if the message is encrypted before decrypting it.
 
 ### 4: UI Repaint Bug
 Symptoms: When updating automatically, the UI sometimes won't repaint itself correctly
