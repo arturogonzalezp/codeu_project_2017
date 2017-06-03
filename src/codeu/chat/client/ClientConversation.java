@@ -20,6 +20,7 @@ import java.util.Map;
 
 import codeu.chat.common.Conversation;
 import codeu.chat.common.ConversationSummary;
+import codeu.chat.util.EncryptionKey;
 import codeu.chat.util.Logger;
 import codeu.chat.util.Method;
 import codeu.chat.util.Uuid;
@@ -28,7 +29,6 @@ import codeu.chat.util.store.Store;
 public final class ClientConversation {
 
   private final static Logger.Log LOG = Logger.newLog(ClientConversation.class);
-
   private final Controller controller;
   private final View view;
 
@@ -40,6 +40,7 @@ public final class ClientConversation {
 
   // This is the set of conversations known to the server.
   private final Map<Uuid, ConversationSummary> summariesByUuid = new HashMap<>();
+  public EncryptionKey publicKey;
 
   // This is the set of conversations known to the server, sorted by title.
   private Store<String, ConversationSummary> summariesSortedByTitle =
@@ -61,9 +62,6 @@ public final class ClientConversation {
     if ((title.length() <= 0) || (title.length() > 64)) {
       clean = false;
     } else {
-
-      // TODO: check for invalid characters
-
     }
     return clean;
   }
@@ -78,6 +76,10 @@ public final class ClientConversation {
 
   public Uuid getCurrentId() { return (currentSummary != null) ? currentSummary.id : null; }
 
+  public Conversation getCurrentConversation(){return currentConversation;}
+
+  public EncryptionKey getPublicKey(){return publicKey;}
+
   public int currentMessageCount() {
     return messageContext.currentMessageCount();
   }
@@ -88,9 +90,8 @@ public final class ClientConversation {
 
   public void startConversation(String title, Uuid owner) {
     final boolean validInputs = isValidTitle(title);
-
     final Conversation conv = (validInputs) ? controller.newConversation(title, owner) : null;
-
+    publicKey = conv.PublicKey();
     if (conv == null) {
       System.out.format("Error: conversation not created - %s.\n",
           (validInputs) ? "server failure" : "bad input value");
@@ -104,6 +105,10 @@ public final class ClientConversation {
   }
 
   public void setCurrent(ConversationSummary conv) { currentSummary = conv; }
+  public void setPublicKey(EncryptionKey publicKey){ this.publicKey = publicKey;}
+  public void setCurrentConversation(Conversation currentConversation) {
+    this.currentConversation = currentConversation;
+  }
 
   public void showAllConversations() {
     updateAllConversations(false);

@@ -5,11 +5,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 import java.io.File;
+import java.math.BigInteger;
 
 import codeu.chat.client.ClientContext;
-import codeu.chat.common.ConversationSummary;
-import codeu.chat.common.Message;
-import codeu.chat.common.User;
+import codeu.chat.common.*;
+import codeu.chat.util.RSA;
 
 // NOTE: JPanel is serializable, but there is no need to serialize MessagePanel
 // without the @SuppressWarnings, the compiler will complain of no override for serialVersionUID
@@ -142,13 +142,14 @@ public final class MessagePanel extends JPanel{
         if (!clientContext.conversation.hasCurrent()) {
           JOptionPane.showMessageDialog(MessagePanel.this, "You must select a conversation.");
         } else {
-          final String messageText = sendMessageTextArea.getText();
+          final String messageText = " " + sendMessageTextArea.getText();
+
           if (messageText != null && messageText.length() > 0) {
-            // Implement sending message with file here:
             clientContext.message.addMessage(
                 clientContext.user.getCurrent().id,
                 clientContext.conversation.getCurrentId(),
-                messageText);
+                messageText,
+                clientContext.conversation.getPublicKey());
             sendMessageTextArea.setText("");
             MessagePanel.this.getAllMessages(clientContext.conversation.getCurrent());
 
@@ -196,18 +197,23 @@ public final class MessagePanel extends JPanel{
   }
 
   // Populate ListModel
-  // TODO: don't refetch messages if current conversation not changed
   private void getAllMessages(ConversationSummary conversation) {
     messageListModel.clear();
-
     for (final Message m : clientContext.message.getConversationContents(conversation)) {
       // Display author name if available.  Otherwise display the author UUID.
       final String authorName = clientContext.user.getName(m.author);
-
-      final String displayString = String.format("@%s: %s",
-          ((authorName == null) ? m.author : authorName), m.content);
-
-      messageListModel.addElement(displayString);
+      try {
+        BigInteger encryptedContent = RSA.valueToBigInteger(m.content);
+        Conversation currentConversation = clientContext.conversation.getCurrentConversation();
+        m.content = RSA.messageToString(RSA.decrypt(encryptedContent, currentConversation.SecretKey()));
+        final String displayString = String.format("@%s: %s",
+                ((authorName == null) ? m.author : authorName), m.content);
+        messageListModel.addElement(displayString);
+      }catch (NumberFormatException nfe){
+        final String displayString = String.format("@%s: %s",
+                ((authorName == null) ? m.author : authorName), m.content);
+        messageListModel.addElement(displayString);
+      }
     }
   }
 }

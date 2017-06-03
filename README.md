@@ -5,24 +5,24 @@
 
 1. To build the project:
     ```
-    $ sh clean.sh
-    $ sh make.sh // Already unzip all .jar needed to compile Firebase
+    python build/all.py rebuild
     ```
-2. To run the server just run the same configurations as the [GETTING STARTED](#getting-started) but instead of using `sh` use `bash`
+2. To run the server: 
     ```
-    $ bash run_server.sh <team_id> <team_secret> <port> <persistent-dir>
+    python build/all.py run codeu.chat.ServerMain <team_id> <team_secret> <port> <persistent-dir>
     ```
-    Note: `<persistent-dir>` must be `./persistance/`. Example:
+    Note: `<persistent-dir>` must be "./persistance/". Example:
     ```
-    $ bash run_server.sh 100 ABABAB 2007 ./persistance/
+    python build/all.py run codeu.chat.ServerMain 100 ABABAB 2007 ./persistance/
     ```
 3. To run the client:
     ```
-    $ bash run_main_gui_client.sh <host> <port>
+   python build/all.py run codeu.chat.MainGuiClient <host> <port>
     ```
-    Example:
+    Examples:
     ```
-    $ bash run_main_gui_client.sh 192.168.0.1 2007
+    python build/all.py run codeu.chat.MainGuiClient 192.168.0.1 2007
+    python build/all.py run codeu.chat.MainGuiClient localhost@2007
     ```
 
 ## DISCLAIMER
@@ -39,6 +39,8 @@ All instructions here are relative to a LINUX environment. There will be some
 differences if you are working on a non-LINUX system. We will not support any
 other development environment.
 
+Note: This has been fixed with the new python script, this project will run in Windows, too.
+
 This project was built using JAVA 7. It is recommended that you install
 JAVA&nbsp;7 when working with this project.
 
@@ -47,24 +49,23 @@ JAVA&nbsp;7 when working with this project.
 
   1. To build the project:
        ```
-       $ sh clean.sh
-       $ sh make.sh
+       python build/all.py rebuild
        ```
 
   1. To test the project:
        ```
-       $ sh test.sh
+       python build/all.py run codeu.chat.TestRunner
        ```
 
   1. To run the project you will need to run both the client and the server. Run
-     the following two commands in separate shells:
+     the following two commands in separate terminals:
 
        ```
-       $ sh run_server.sh <team_id> <team_secret> <port> <persistent-dir>
-       $ sh run_client.sh <host> <port>
+       python build/all.py run codeu.chat.ServerMain <team_id> <team_secret> <port> <persistent-dir>
+       python build/all.py run codeu.chat.MainGuiClient <host> <port>
        ```
 
-     You must specify the following startup arguments for `run_server.sh:
+     You must specify the following startup arguments for `run codeu.chat.ServerMain':
      + `<team_id>` and `<team_secret>`: a numeric id for your team, and a secret
        code, which are used to authenticate your server with the Relay server.
        You can specify any integer value for `<team_id>`, and a value expressed
@@ -84,12 +85,12 @@ JAVA&nbsp;7 when working with this project.
      + `<persistent-dir>`: the path where you want the server to save data between
        runs.
 
-     The startup arguments for `run_client.sh` are the following:
+     The startup arguments for `python build/all.py run codeu.chat.MainGuiClient` are the following:
      + `<host>`: the hostname or IP address of the computer on which the server
        is listening. If you are running server and client on the same computer,
        you can use `localhost` here.
      + `<port>`: the port on which your server is listening. Must be the same
-       port number you have specified when you launched `run_server.sh`.
+       port number you have specified when you launched `python build/all.py run codeu.chat.ServerMain`.
 
 All running images write informational and exceptional events to log files.
 The default setting for log messages is "INFO". You may change this to get
@@ -99,7 +100,7 @@ which is built on top of `java.util.logging.Logger`, which you can refer to
 for more information.
 
 In addition to your team's client and server, the project also includes a
-Relay Server and a script that runs it (`run_relay.sh`).
+Relay Server and a script that runs it (`python build/all.py run codeu.chat.RelayMain`).
 This is not needed to get started with the project.
 
 
@@ -124,8 +125,8 @@ main packages/directories under `src/codeu/chat` are:
 
 ### codeu.chat.client
 
-Classes for building the two clients (`codeu.chat.ClientMain` and
-`codeu.chat.SimpleGuiClientMain`).
+Classes for building the three clients (`codeu.chat.ClientMain`,
+`codeu.chat.SimpleGuiClientMain`, and `codeu.chat.MainGuiClient`).
 
 ### codeu.chat.server
 
