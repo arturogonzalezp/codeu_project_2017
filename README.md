@@ -44,7 +44,22 @@ Note: This has been fixed with the new python script, this project will run in W
 This project was built using JAVA 7. It is recommended that you install
 JAVA&nbsp;7 when working with this project.
 
+Table of Contents
+-----------------
 
+[**Getting Started**](#getting-started)
+
+[**Finding Your Way Around the Project**](#your-way)
+
+[**Source Directories**](#directories)
+
+[**Feature Description**](#features)
+
+[**Refactor Documentation**](#refactors)
+
+[**Bug Documentation**](#bugs)
+
+<a name="getting-started"></a>
 ## GETTING STARTED
 
   1. To build the project:
@@ -103,7 +118,7 @@ In addition to your team's client and server, the project also includes a
 Relay Server and a script that runs it (`python build/all.py run codeu.chat.RelayMain`).
 This is not needed to get started with the project.
 
-
+<a name="your-way"></a>
 ## Finding your way around the project
 
 All the source files (except test-related source files) are in
@@ -116,8 +131,7 @@ this installed. The supplied scripts use the version in `./third_party`.
 Finally, there are some high-level design documents in the project Wiki. Please
 review them as they can help you find your way around the sources.
 
-
-
+<a name="directories"></a>
 ## Source Directories
 
 The major project components have been separated into their own packages. The
@@ -144,3 +158,58 @@ Classes that are shared by the clients and servers.
 ### codeu.chat.util
 
 Some basic infrastructure classes used throughout the project.
+
+<a name="features"></a>
+## FEATURES
+
+### New UI
+
+A brand new UI was developed to implement file sharing and interface callbacks.
+It is the one you'll see if you run the client with the instructions in [**Getting Started**](#getting-started)
+
+### File Sharing
+
+You are now able to share files through the chat. Simply click on the "File" button in the bottom-right corner, select a file from your computer and share it with everyone in the conversation.
+
+### Secure Login
+
+To make sure only you can read your conversations, we've implemented a secure login that will prompt you for your username and password before you can access the messages. It'll appear right when you run the client as in the [**Getting Started**](#getting-started) instructions
+
+### Message Encryption
+
+To add even more security to the chat, messages are encrypted when going through the Server and database so none but the users in your conversation can read them. This is done automatically and not apparent on the graphical interface, but you can see how the message is stored and sent through the server in the terminal where you run the client.
+
+<a name="refactors"></a>
+## REFACTOR DOCUMENTATION
+
+### New UI
+We created a brand new UI which enabled us to implement the secure login and file sharing features. However, using Swing limited the design we could apply to it and not making the project a webapp limited the features we could implement. We chose it because that's the library we were more comfortable with and could build faster.
+
+### Changed Conversation, Message and User classes
+This allowed us to add files and encryption as well as persistence.
+
+### Changed the methods that add conversations and messages
+This sometimes conflicted with the interfaces implemented, but allowed encryption, persistence and file-sharing to be added.
+
+<a name="bugs"></a>
+## BUG DOCUMENTATION
+
+### 1. Key Storage in Firebase
+Symptoms: Keys won't store in database
+Cause: Firebase cannot parse BigIntegers include in EncryptionKeys
+Cure: Casting BigIntegers to String and save them as such
+
+### 2: Message Decryption Because of BIgInteger Casting
+Symptoms: Messages were displayed as gibberish
+Cause: Keys and messages weren't being parsed correctly from BigIntegers to Strings and viceversa
+Cure: Had to create two different methods for purely numerical values and text
+
+### 3: Last Message Decryption
+Symptoms: Last message sent is displayed as gibberish
+Cause: Las message is not encrypted but still goes through the decryption process so it's turned into gibberish
+Cure: Verify if the message is encrypted before decrypting it
+
+### 4: UI Repaint Bug
+Symptoms: When updating automatically, the UI sometimes won't repaint itself correctly
+Cause: Unknown
+Cure: Bug not fixed yet, added a manual update button meanwhile
