@@ -110,6 +110,7 @@ public final class MessagePanel extends JPanel{
                 JFileChooser saveDialog = new JFileChooser();
                 saveDialog.showSaveDialog(null);
                 File saveTo = saveDialog.getSelectedFile();
+                if(saveTo == null) return;
                 try {
                     FileOutputStream stream = new FileOutputStream(saveTo);
                     stream.write(file);
