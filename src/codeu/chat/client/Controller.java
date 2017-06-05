@@ -67,7 +67,8 @@ public class Controller implements BasicController {
         Serializers.BYTES.write(connection.out(), Files.readAllBytes(file.toPath()));
       }
 
-      if (Serializers.INTEGER.read(connection.in()) == NetworkCode.NEW_MESSAGE_RESPONSE) {
+      int resp = Serializers.INTEGER.read(connection.in());
+      if (resp == NetworkCode.NEW_MESSAGE_RESPONSE || resp == NetworkCode.NEW_FILE_MESSAGE_RESPONSE) {
         response = Serializers.nullable(Message.SERIALIZER).read(connection.in());
       } else {
         LOG.error("Response from server failed.");
@@ -190,5 +191,23 @@ public class Controller implements BasicController {
     }
 
     return response;
+  }
+
+  public byte[] downloadFile(String filename){
+      byte[] response = null;
+      try (final Connection connection = source.connect()) {
+          Serializers.INTEGER.write(connection.out(), NetworkCode.DOWNLOAD_FILE_REQUEST);
+          Serializers.STRING.write(connection.out(), filename);
+
+          if (Serializers.INTEGER.read(connection.in()) == NetworkCode.DOWNLOAD_FILE_RESPONSE) {
+               response = Serializers.BYTES.read(connection.in());
+          } else {
+              LOG.error("Response from server failed.");
+          }
+      } catch (Exception ex) {
+        System.out.println("ERROR: Exception during call on server. Check log for details.");
+        LOG.error(ex, "Exception during call on server.");
+      }
+      return response;
   }
 }

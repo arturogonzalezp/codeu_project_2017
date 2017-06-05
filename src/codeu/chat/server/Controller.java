@@ -84,7 +84,7 @@ public final class Controller implements RawController, BasicController {
         String filename = persistanceController.addFile(file);
         message = new Message(id, Uuid.NULL, Uuid.NULL, creationTime, author, body, filename);
       } else {
-        message = new Message(id, Uuid.NULL, Uuid.NULL, creationTime, author, body);
+        message = new Message(id, Uuid.NULL, Uuid.NULL, creationTime, author, body, null);
       }
 
       model.add(message);
@@ -207,6 +207,10 @@ public final class Controller implements RawController, BasicController {
       LOG.info("LOGIN: User %s doesn't exist", username);
     }
     return null;
+  }
+
+  public byte[] downloadFile(String filename){
+    return persistanceController.downloadFile(filename);
   }
 
   // Load all users from Firebase

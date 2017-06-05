@@ -36,7 +36,11 @@ public final class Message {
       Time.SERIALIZER.write(out, value.creation);
       Uuid.SERIALIZER.write(out, value.author);
       Serializers.STRING.write(out, value.content);
-      Serializers.STRING.write(out, value.fileID);
+      if(value.fileID != null) {
+        Serializers.STRING.write(out, value.fileID);
+      } else {
+        Serializers.STRING.write(out, "");
+      }
 
     }
 

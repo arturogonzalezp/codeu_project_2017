@@ -7,6 +7,9 @@ import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 
 import codeu.chat.client.ClientContext;
@@ -102,6 +105,20 @@ public final class MessagePanel extends JPanel{
         public void mouseClicked(MouseEvent e) {
             JList list = (JList)e.getSource();
             MessagePanelItem item = (MessagePanelItem)list.getModel().getElementAt(list.getSelectedIndex());
+            if(!item.file.equals("")){
+                byte[] file = clientContext.message.downloadFile(item.file);
+                JFileChooser saveDialog = new JFileChooser();
+                saveDialog.showSaveDialog(null);
+                File saveTo = saveDialog.getSelectedFile();
+                try {
+                    FileOutputStream stream = new FileOutputStream(saveTo);
+                    stream.write(file);
+                    stream.close();
+                    JOptionPane.showMessageDialog(null, "File downloaded to " + saveTo.getAbsolutePath());
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
         }
     });
 

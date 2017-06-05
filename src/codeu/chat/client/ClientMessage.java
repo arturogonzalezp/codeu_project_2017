@@ -253,4 +253,8 @@ public final class ClientMessage {
   public static void printMessage(Message m) {
     printMessage(m, null);
   }
+
+  public byte[] downloadFile(String filename){
+    return controller.downloadFile(filename);
+  }
 }

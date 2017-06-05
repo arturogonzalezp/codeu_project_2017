@@ -122,7 +122,7 @@ public final class Server {
         message = controller.newMessage(author, conversation, content, file);
 
       } else {
-        message = controller.newMessage(author, conversation, content);
+        message = controller.newMessage(author, conversation, content, null);
       }
 
       Serializers.INTEGER.write(out, type == NetworkCode.NEW_MESSAGE_REQUEST ?
@@ -254,6 +254,12 @@ public final class Server {
 
       Serializers.INTEGER.write(out, NetworkCode.SEARCH_USER_IN_DATABASE_RESPONSE);
       Serializers.nullable(User.SERIALIZER).write(out, user);
+
+    } else if (type == NetworkCode.DOWNLOAD_FILE_REQUEST) {
+
+      final String filename = Serializers.STRING.read(in);
+      Serializers.INTEGER.write(out, NetworkCode.DOWNLOAD_FILE_RESPONSE);
+      Serializers.BYTES.write(out, controller.downloadFile(filename));
 
     } else {
 

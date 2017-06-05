@@ -191,6 +191,12 @@ public class PersistanceController{
 
         return blob.getName();
     }
+    public byte[] downloadFile(String filename){
+        BlobId blobId = BlobId.of(storageBucket, filename);
+        Blob blob = storage.get(blobId);
+
+        return blob.getContent();
+    }
     private String generateRandomName(){
         String candidateChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         StringBuilder sb = new StringBuilder();
