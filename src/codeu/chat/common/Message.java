@@ -60,7 +60,7 @@ public final class Message {
   public Uuid author;
   public String content;
   public Uuid next;
-  public byte[] file;
+  public String fileID;
 
   public Message(Uuid id, Uuid next, Uuid previous, Time creation, Uuid author, String content) {
 
@@ -73,7 +73,7 @@ public final class Message {
 
   }
 
-  public Message(Uuid id, Uuid next, Uuid previous, Time creation, Uuid author, String content, byte[] file) {
+  public Message(Uuid id, Uuid next, Uuid previous, Time creation, Uuid author, String content, String fileID) {
 
     this.id = id;
     this.next = next;
@@ -81,8 +81,7 @@ public final class Message {
     this.creation = creation;
     this.author = author;
     this.content = content;
-    this.file = file;
-
+    this.fileID = fileID;
   }
 
   // Constructor with no agruments (needed for Firebase)

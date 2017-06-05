@@ -81,7 +81,8 @@ public final class Controller implements RawController, BasicController {
     if (foundUser != null && foundConversation != null && isIdFree(id)) {
 
       if(file != null) {
-        message = new Message(id, Uuid.NULL, Uuid.NULL, creationTime, author, body, file);
+        String filename = persistanceController.addFile(file);
+        message = new Message(id, Uuid.NULL, Uuid.NULL, creationTime, author, body, filename);
       } else {
         message = new Message(id, Uuid.NULL, Uuid.NULL, creationTime, author, body);
       }
