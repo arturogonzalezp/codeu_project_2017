@@ -36,6 +36,7 @@ public final class Message {
       Time.SERIALIZER.write(out, value.creation);
       Uuid.SERIALIZER.write(out, value.author);
       Serializers.STRING.write(out, value.content);
+      Serializers.STRING.write(out, value.fileID);
 
     }
 
@@ -48,6 +49,7 @@ public final class Message {
           Uuid.SERIALIZER.read(in),
           Time.SERIALIZER.read(in),
           Uuid.SERIALIZER.read(in),
+          Serializers.STRING.read(in),
           Serializers.STRING.read(in)
       );
 

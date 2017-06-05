@@ -4,6 +4,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.math.BigInteger;
 
@@ -19,7 +21,7 @@ public final class MessagePanel extends JPanel{
   // These objects are modified by the Conversation Panel.
   private final JLabel messageOwnerLabel = new JLabel("Owner:", JLabel.RIGHT);
   private final JLabel messageConversationLabel = new JLabel("Conversation:", JLabel.LEFT);
-  private final DefaultListModel<String> messageListModel = new DefaultListModel<>();
+  private final DefaultListModel<MessagePanelItem> messageListModel = new DefaultListModel<>();
 
   private final ClientContext clientContext;
 
@@ -92,9 +94,16 @@ public final class MessagePanel extends JPanel{
 
     // messageListModel is an instance variable so Conversation panel
     // can update it.
-    final JList<String> userList = new JList<>(messageListModel);
+    final JList<MessagePanelItem> userList = new JList<>(messageListModel);
     userList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     userList.setSelectedIndex(-1);
+    userList.addMouseListener(new MouseAdapter() {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            JList list = (JList)e.getSource();
+            MessagePanelItem item = (MessagePanelItem)list.getModel().getElementAt(list.getSelectedIndex());
+        }
+    });
 
     final JScrollPane userListScrollPane = new JScrollPane(userList);
     listShowPanel.add(userListScrollPane, BorderLayout.CENTER);
@@ -206,13 +215,11 @@ public final class MessagePanel extends JPanel{
         BigInteger encryptedContent = RSA.valueToBigInteger(m.content);
         Conversation currentConversation = clientContext.conversation.getCurrentConversation();
         m.content = RSA.messageToString(RSA.decrypt(encryptedContent, currentConversation.SecretKey()));
-        final String displayString = String.format("@%s: %s",
-                ((authorName == null) ? m.author : authorName), m.content);
-        messageListModel.addElement(displayString);
+        messageListModel.addElement(new MessagePanelItem(String.format("@%s: %s",
+                ((authorName == null) ? m.author : authorName), m.content), m.fileID));
       }catch (NumberFormatException nfe){
-        final String displayString = String.format("@%s: %s",
-                ((authorName == null) ? m.author : authorName), m.content);
-        messageListModel.addElement(displayString);
+        messageListModel.addElement(new MessagePanelItem(String.format("@%s: %s",
+                ((authorName == null) ? m.author : authorName), m.content), m.fileID));
       }
     }
   }
