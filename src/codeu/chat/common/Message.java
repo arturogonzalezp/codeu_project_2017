@@ -36,6 +36,11 @@ public final class Message {
       Time.SERIALIZER.write(out, value.creation);
       Uuid.SERIALIZER.write(out, value.author);
       Serializers.STRING.write(out, value.content);
+      if(value.fileID != null) {
+        Serializers.STRING.write(out, value.fileID);
+      } else {
+        Serializers.STRING.write(out, "");
+      }
 
     }
 
@@ -48,6 +53,7 @@ public final class Message {
           Uuid.SERIALIZER.read(in),
           Time.SERIALIZER.read(in),
           Uuid.SERIALIZER.read(in),
+          Serializers.STRING.read(in),
           Serializers.STRING.read(in)
       );
 
@@ -60,6 +66,7 @@ public final class Message {
   public Uuid author;
   public String content;
   public Uuid next;
+  public String fileID;
 
   public Message(Uuid id, Uuid next, Uuid previous, Time creation, Uuid author, String content) {
 
@@ -72,7 +79,18 @@ public final class Message {
 
   }
 
-  // Constructor with no arguments (needed for Firebase)
+  public Message(Uuid id, Uuid next, Uuid previous, Time creation, Uuid author, String content, String fileID) {
+
+    this.id = id;
+    this.next = next;
+    this.previous = previous;
+    this.creation = creation;
+    this.author = author;
+    this.content = content;
+    this.fileID = fileID;
+  }
+
+  // Constructor with no agruments (needed for Firebase)
   public Message(){
 
   }

@@ -1,10 +1,11 @@
 package codeu.chat.common;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.concurrent.Semaphore;
 import java.lang.InterruptedException;
 import java.math.BigInteger;
@@ -12,16 +13,21 @@ import java.math.BigInteger;
 import codeu.chat.util.Logger;
 import codeu.chat.util.Uuid;
 
+import com.google.auth.oauth2.ServiceAccountCredentials;
+import com.google.cloud.storage.*;
 import com.google.firebase.*;
 import com.google.firebase.database.*;
 import com.google.firebase.auth.*;
 
 
+
 public class PersistanceController{
     
     public static final String firebaseDatabaseUrl = "https://codeu-chat-database.firebaseio.com";
+    public static final String storageBucket = "codeu-chat-database.appspot.com";
     private final static Logger.Log LOG = Logger.newLog(PersistanceController.class);
     private FirebaseDatabase firebaseDatabase;
+    private Storage storage;
     private String serverIdStr;
 
     public PersistanceController(String persistancePath, Uuid serverId, String firebaseKeyPath) {
@@ -58,7 +64,13 @@ public class PersistanceController{
 
             });
 
-        } catch (FileNotFoundException e) {
+            // Create Google Cloud Platform Storage Object
+            storage = StorageOptions.newBuilder()
+                    .setCredentials(ServiceAccountCredentials.fromStream(new FileInputStream(persistancePath + firebaseKeyPath)))
+                    .build()
+                    .getService();
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -165,5 +177,35 @@ public class PersistanceController{
         final DatabaseReference userReference = firebaseDatabase.getReference(serverIdStr).child("users");
         userReference.child(Integer.toString(user.id.id())).setValue(user);
         return true;
+    }
+    public String addFile(byte[] file){
+        String filename = generateRandomName();
+
+        while(storage.get(BlobId.of(storageBucket, filename)) != null){
+            filename = generateRandomName();
+        }
+
+        BlobId blobId = BlobId.of(storageBucket, filename);
+        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
+        Blob blob = storage.create(blobInfo, file);
+
+        return blob.getName();
+    }
+    public byte[] downloadFile(String filename){
+        BlobId blobId = BlobId.of(storageBucket, filename);
+        Blob blob = storage.get(blobId);
+
+        return blob.getContent();
+    }
+    private String generateRandomName(){
+        String candidateChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        StringBuilder sb = new StringBuilder();
+        Random random = new Random();
+        for (int i = 0; i < 32; i++) {
+            sb.append(candidateChars.charAt(random.nextInt(candidateChars
+                    .length())));
+        }
+
+        return sb.toString();
     }
 }

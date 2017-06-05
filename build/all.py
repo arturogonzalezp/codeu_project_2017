@@ -67,7 +67,8 @@ config = {
     'third_party/database-api/json-20140107.jar',
     'third_party/database-api/jsr305-1.3.9.jar',
     'third_party/database-api/protobuf-java-2.6.1.jar',
-    'third_party/database-api/xpp3-1.1.4c.jar'
+    'third_party/database-api/xpp3-1.1.4c.jar',
+    'third_party/database-api/google-cloud.jar'
   ],
   'separators' : {
     'nt' : ';',

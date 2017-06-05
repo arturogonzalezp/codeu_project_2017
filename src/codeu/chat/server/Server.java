@@ -113,16 +113,17 @@ public final class Server {
       final Uuid conversation = Uuid.SERIALIZER.read(in);
       final String content = Serializers.STRING.read(in);
 
+      final Message message;
+
       // In a NEW_FILE_MESSAGE_REQUEST the content variable will hold the filename, including extension.
       if(type == NetworkCode.NEW_FILE_MESSAGE_REQUEST) {
 
         final byte[] file = Serializers.BYTES.read(in);
+        message = controller.newMessage(author, conversation, content, file);
 
-        // At this point we have the file on the server as an array of bytes.
-        // We can do whatever we need with this here.
+      } else {
+        message = controller.newMessage(author, conversation, content, null);
       }
-
-      final Message message = controller.newMessage(author, conversation, content);
 
       Serializers.INTEGER.write(out, type == NetworkCode.NEW_MESSAGE_REQUEST ?
               NetworkCode.NEW_MESSAGE_RESPONSE : NetworkCode.NEW_FILE_MESSAGE_RESPONSE);
@@ -253,6 +254,12 @@ public final class Server {
 
       Serializers.INTEGER.write(out, NetworkCode.SEARCH_USER_IN_DATABASE_RESPONSE);
       Serializers.nullable(User.SERIALIZER).write(out, user);
+
+    } else if (type == NetworkCode.DOWNLOAD_FILE_REQUEST) {
+
+      final String filename = Serializers.STRING.read(in);
+      Serializers.INTEGER.write(out, NetworkCode.DOWNLOAD_FILE_RESPONSE);
+      Serializers.BYTES.write(out, controller.downloadFile(filename));
 
     } else {
 
