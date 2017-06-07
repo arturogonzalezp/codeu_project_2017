@@ -181,7 +181,11 @@ You are now able to share files through the chat. Simply click on the "File" but
 
 ### Secure Login
 
-To make sure only you can read your conversations, we've implemented a secure login that will prompt you for your username and password before you can access the messages. It'll appear right when you run the client as in the [**Getting Started**](#getting-started) instructions
+To make sure only you can read your conversations, we've implemented a secure login that will prompt you for your username and password before you can access the messages. It'll appear right when you run the client as in the [**Getting Started**](#getting-started) instructions. 
+
+### Data Persistence
+
+All messages and files sent are stored in a database even after the server and client have been closed. This is done through the implementation of Firebase.Typically, this would mean a secret and public key are needed to keep the security of data while writing and reading from the database. The seceret key is not to be posted in a public repository, but for testing purposes we've added it so you can run the project without issues.
 
 ### Message Encryption
 
