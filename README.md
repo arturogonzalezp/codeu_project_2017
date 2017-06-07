@@ -106,6 +106,14 @@ Table of Contents
        you can use `localhost` here.
      + `<port>`: the port on which your server is listening. Must be the same
        port number you have specified when you launched `python build/all.py run codeu.chat.ServerMain`.
+       
+       You will need a username and a password to log in to the chat, these are added by the administrator 
+       directly into the database, but for testing purposes you may use any of the following:
+       
+       username: will password: will123
+       username: cesar password: cesar123
+       username: yoali password: yoali123
+       username: ruben password: ruben123
 
 All running images write informational and exceptional events to log files.
 The default setting for log messages is "INFO". You may change this to get
